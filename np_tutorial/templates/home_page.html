@@ -13,8 +13,8 @@
             <h1>Добро пожаловать в мир обучения критерию Неймана-Пирсона!</h1>
             <a href='{% url "button_click" %}' class="btn btn-outline-success btn-lg btn-block">Начать</a>
         {% else %}
-            <button type="button" class="btn btn-outline-success btn-lg btn-block">Рандомизированый</button>
-            <button type="button" class="btn btn-outline-success btn-lg btn-block">Нерандомизированый</button>
+            <a href='{% url "tutorial:random" %}' class="btn btn-outline-success btn-lg btn-block">Рандомизированый</a>
+            <a href='{% url "button_click" %}' class="btn btn-outline-success btn-lg btn-block">Нерандомизированый</a>
         {% endif %}
     </div>
 

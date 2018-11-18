@@ -1,5 +1,5 @@
 from django.shortcuts import render
 
 
-def random_or_not():
-    pass
+def theory_for_random(request):
+    return render(request, 'theory_for_random.html', {})

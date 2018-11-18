@@ -12,6 +12,3 @@ def button_click(request):
     }
     return render(request, 'home_page.html', context)
 
-
-def test_page(request):
-    return render(request, 'test_page.html', {})
