@@ -11,23 +11,73 @@
     <div class='text-center'>
         <h1>Раздел обучения</h1>
         <p>
-            \(L^{*}_{пороговое}\) = 0,5
-        </p>
-        <p>
-            Введите количество решений на которых вы хотите тренироваться:
 
-            <form method='GET' action='{% url "tutorial:training_nr" %}' class="form">
+            <!--Введите количество решений
+
+
+            <form method='POST' action='' class="form">{% csrf_token %}
               <div class='input-group col-md-3' >
-                <input class="form-control" type="number" name='q' value='{{ request.GET.q }}'>
+                <input class="form-control" type="number" name='rows_number'>
                 <button class="btn btn-outline-success" type="submit">Ввод</button>
               </div>
+            </form> -->
+            {% if matrix %}
+            Задайте матрицу потерь:
+            <form method="post">{% csrf_token %}
+                <div align=center>
+                    <table class="matrix">
+                        <tr>
+                            <td>{{ matrix.a11 }}</td>
+                            <td>{{ matrix.a12 }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ matrix.a21 }}</td>
+                            <td>{{ matrix.a22 }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ matrix.a31 }}</td>
+                            <td>{{ matrix.a32 }}</td>
+                        </tr>
+                    </table>
+                </div>
+                Выберите контролируемое состояние природы:
+                {{ matrix.state }}
+                <input type="submit" value="Ввод" name="matrix"/>
             </form>
-            <form>
-                <input>
-            </form>
-        </p>
-
-</div>
+        {% else %}
+            <div align=center>
+                    <table class="matrix">
+                        <tr>
+                            <td>{{ a11 }}</td>
+                            <td>{{ a12 }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ a21 }}</td>
+                            <td>{{ a22 }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ a31 }}</td>
+                            <td>{{ a32 }}</td>
+                        </tr>
+                    </table>
+            </div>
+            Контролирумое состояние: {{ controlled }}
+            <p>
+                \(L^{*}_{пороговое}\) = {{ threshold }}
+            </p>
+            <p>
+                Какие строки не учавствуют в выборе решения?
+                <form method="post">{% csrf_token %}
+                    <p>{{ exclude_rows.row1 }} Строка 1</p>
+                    <p>{{ exclude_rows.row2 }} Строка 2</p>
+                    <p>{{ exclude_rows.row3 }} Строка 3</p>
+                    <input type="submit" value="Ввод" name="exclude_rows" />
+                </form>
+            </p>
+            {% if message %}
+                {{ message}}
+            {% endif %}
+        {% endif %}
 
 
     </div>
