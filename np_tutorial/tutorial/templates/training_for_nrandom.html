@@ -66,6 +66,8 @@
                 \(L^{*}_{пороговое}\) = {{ threshold }}
             </p>
             <p>
+                {% endif %}
+                {% if exclude_rows %}
                 Какие строки не учавствуют в выборе решения?
                 <form method="post">{% csrf_token %}
                     <p>{{ exclude_rows.row1 }} Строка 1</p>
@@ -77,6 +79,13 @@
             {% if message %}
                 {{ message}}
             {% endif %}
+        {% endif %}
+        {% if right_answer %}
+            <form method="post">{% csrf_token %}
+                    <p>{{ right_answer.alpha_number }}</p>
+                <p>{{ right_answer.alpha_number2 }}</p>
+                    <input type="submit" value="Ввод" name="right_answer" />
+                </form>
         {% endif %}
 
 
