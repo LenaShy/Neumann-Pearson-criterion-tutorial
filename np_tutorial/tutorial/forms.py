@@ -57,7 +57,6 @@ class ExcludeRowsForm(forms.Form):
 
 class RightAnswerForm(forms.Form):
     alpha_number = forms.IntegerField(widget=forms.NumberInput)
-    alpha_number2 = forms.BooleanField()
     losses = forms.DecimalField()
 
 

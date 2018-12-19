@@ -83,7 +83,7 @@
         {% if right_answer %}
             <form method="post">{% csrf_token %}
                     <p>{{ right_answer.alpha_number }}</p>
-                <p>{{ right_answer.alpha_number2 }}</p>
+                    <p>{{ right_answer.losses }}</p>
                     <input type="submit" value="Ввод" name="right_answer" />
                 </form>
         {% endif %}

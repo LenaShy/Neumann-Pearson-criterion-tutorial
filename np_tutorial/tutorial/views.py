@@ -83,7 +83,9 @@ def training_for_nrandom(request):
                 context['message'] = 'Правильный ответ!'
             context['right_answer'] = RightAnswerForm()
         if 'right_answer' in request.POST:
-            pass
+            alpha = request.POST.get('alpha_number')
+            losses = request.POST.get('losses')
+            print(alpha)
     '''if request.method == "POST":
         if 'matrix' in request.POST:
             matrix = Matrix(request.POST)
