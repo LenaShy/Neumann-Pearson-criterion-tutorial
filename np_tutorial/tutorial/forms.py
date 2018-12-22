@@ -13,8 +13,8 @@ class MatrixRowForm(forms.ModelForm):
 
 class MatrixForm(forms.ModelForm):
     CHOICES = (
-        ('state1', "beta1"),
-        ('state2', "beta2"),
+        ('\\(\\beta_{1}\\)', '\\(\\beta_{1}\\)'),
+        ('\\(\\beta_{2}\\)', '\\(\\beta_{2}\\)'),
     )
 
     class Meta:
@@ -49,15 +49,11 @@ class MatrixForm(forms.ModelForm):
             self.fields[field_name2] = forms.DecimalField(required=False)'''
 
 
-class ExcludeRowsForm(forms.Form):
+class RowsForm(forms.Form):
     row1 = forms.BooleanField(required=False)
     row2 = forms.BooleanField(required=False)
     row3 = forms.BooleanField(required=False)
-
-
-class RightAnswerForm(forms.Form):
-    alpha_number = forms.IntegerField(widget=forms.NumberInput)
-    losses = forms.DecimalField()
+    case_losses = forms.FloatField()
 
 
 

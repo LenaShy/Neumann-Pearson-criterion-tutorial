@@ -10,7 +10,6 @@
 {% block content %}
     <div class='text-center'>
         <h1>Раздел обучения</h1>
-        <p>
 
             <!--Введите количество решений
 
@@ -21,72 +20,92 @@
                 <button class="btn btn-outline-success" type="submit">Ввод</button>
               </div>
             </form> -->
-            {% if matrix %}
-            Задайте матрицу потерь:
-            <form method="post">{% csrf_token %}
-                <div align=center>
-                    <table class="matrix">
-                        <tr>
-                            <td>{{ matrix.a11 }}</td>
-                            <td>{{ matrix.a12 }}</td>
-                        </tr>
-                        <tr>
-                            <td>{{ matrix.a21 }}</td>
-                            <td>{{ matrix.a22 }}</td>
-                        </tr>
-                        <tr>
-                            <td>{{ matrix.a31 }}</td>
-                            <td>{{ matrix.a32 }}</td>
-                        </tr>
-                    </table>
+            {% if not end_of_tutorial %}
+                {% if matrix %}
+                    <h3>Задайте матрицу потерь:</h3>
+                    <form method="post">{% csrf_token %}
+                    <div align=center>
+                        <table class="matrix">
+                            <tr>
+                                <td>{{ matrix.a11 }}</td>
+                                <td>{{ matrix.a12 }}</td>
+                            </tr>
+                            <tr>
+                                <td>{{ matrix.a21 }}</td>
+                                <td>{{ matrix.a22 }}</td>
+                            </tr>
+                            <tr>
+                                <td>{{ matrix.a31 }}</td>
+                                <td>{{ matrix.a32 }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <h3>Выберите контролируемое состояние природы:</h3>
+                    {{ matrix.state }}
+                    <input type="submit" value="Ввод" name="matrix"/>
+                </form>
+                {% else %}
+                    <div align=center>
+                        <table class="matrix">
+                            <tr>
+                                <td>{{ a11 }}</td>
+                                <td>{{ a12 }}</td>
+                            </tr>
+                            <tr>
+                                <td>{{ a21 }}</td>
+                                <td>{{ a22 }}</td>
+                            </tr>
+                            <tr>
+                                <td>{{ a31 }}</td>
+                                <td>{{ a32 }}</td>
+                            </tr>
+                        </table>
                 </div>
-                Выберите контролируемое состояние природы:
-                {{ matrix.state }}
-                <input type="submit" value="Ввод" name="matrix"/>
-            </form>
-        {% else %}
-            <div align=center>
-                    <table class="matrix">
-                        <tr>
-                            <td>{{ a11 }}</td>
-                            <td>{{ a12 }}</td>
-                        </tr>
-                        <tr>
-                            <td>{{ a21 }}</td>
-                            <td>{{ a22 }}</td>
-                        </tr>
-                        <tr>
-                            <td>{{ a31 }}</td>
-                            <td>{{ a32 }}</td>
-                        </tr>
-                    </table>
-            </div>
-            Контролирумое состояние: {{ controlled }}
-            <p>
-                \(L^{*}_{пороговое}\) = {{ threshold }}
-            </p>
-            <p>
+                    <h4>Контролирумое состояние: {{ controlled }}</h4>
+                    <br/>
+                    <h4>\(L^{*}_{пороговое}\) = {{ threshold }}</h4>
                 {% endif %}
                 {% if exclude_rows %}
-                Какие строки не учавствуют в выборе решения?
-                <form method="post">{% csrf_token %}
-                    <p>{{ exclude_rows.row1 }} Строка 1</p>
-                    <p>{{ exclude_rows.row2 }} Строка 2</p>
-                    <p>{{ exclude_rows.row3 }} Строка 3</p>
-                    <input type="submit" value="Ввод" name="exclude_rows" />
-                </form>
-            </p>
-            {% if message %}
-                {{ message}}
+                    <hr/>
+                    <form method="post">{% csrf_token %}
+                        <h3>Какие строки не учавствуют в выборе решения?</h3>
+                        <p>{{ exclude_rows.row1 }} Строка 1</p>
+                        <p>{{ exclude_rows.row2 }} Строка 2</p>
+                        <p>{{ exclude_rows.row3 }} Строка 3</p>
+                        <input type="submit" value="Ввод" name="exclude_rows" />
+                    </form>
+                    {% if message1 %}
+                        <h5 style="{{ color }}">{{ message1 }}</h5>
+                    {% endif %}
+                {% endif %}
+                {% if answer %}
+                    <hr>
+                    <form method="post">{% csrf_token %}
+                            <h3>Выберите решение:</h3>
+                            <p>{{ answer.row1 }} \(\alpha_{1}\)</p>
+                            <p>{{ answer.row2 }} \(\alpha_{2}\)</p>
+                            <p>{{ answer.row3 }} \(\alpha_{3}\)</p>
+                            <input type="submit" value="Ввод" name="answer" />
+                    </form>
+                    {% if message2 %}
+                        <h5 style="{{ color }}">{{ message2 }}</h5>
+                    {% endif %}
+                {% endif %}
+                {% if losses %}
+                    <hr>
+                    <form method="post">{% csrf_token %}
+                            <h3>Введите значение потерь:</h3>
+                            <p>{{ losses.case_losses }}</p>
+                            <input type="submit" value="Ввод" name="losses" />
+                    </form>
+                    {% if message3 %}
+                        <h5 style="{{ color }}">{{ message3 }}</h5>
+                    {% endif %}
+                {% endif %}
+            {% else %}
+                <h1>Обучение пройдено!</h1>
             {% endif %}
-        {% endif %}
-        {% if right_answer %}
-            <form method="post">{% csrf_token %}
-                    <p>{{ right_answer.alpha_number }}</p>
-                    <p>{{ right_answer.losses }}</p>
-                    <input type="submit" value="Ввод" name="right_answer" />
-                </form>
-        {% endif %}
+
 
 
     </div>
