@@ -11,6 +11,10 @@ def example_for_random(request):
     return render(request, 'example_for_random.html', {})
 
 
+def theory_for_random(request):
+    return render(request, 'theory_for_random.html', {})
+
+
 def get_data(request, *args, **kwargs):
     data = {
         "sales": 100,
