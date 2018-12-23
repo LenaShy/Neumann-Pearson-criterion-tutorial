@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.http import JsonResponse
 
 from .forms import MatrixForm, RowsForm
 from .models import Matrix
@@ -6,12 +7,16 @@ from .models import Matrix
 import math
 
 
-def theory_for_random(request):
-    matrix = Matrix()
-    context = {
-        'matrix': matrix,
+def example_for_random(request):
+    return render(request, 'example_for_random.html', {})
+
+
+def get_data(request, *args, **kwargs):
+    data = {
+        "sales": 100,
+        "customers": 10,
     }
-    return render(request, 'theory_for_random.html', context)
+    return JsonResponse(data)
 
 
 def example_for_nrandom(request):
