@@ -1,86 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
-
-<script>
-{% block jquery %}
-var endpoint = '/tutorial/api/data/'
-var defaultData = []
-var labels = [];
-$.ajax({
-    method: "GET",
-    url: endpoint,
-    success: function(data){
-        var canvas = document.querySelector("canvas"),
-        context = canvas.getContext("2d");
-
-        var width = canvas.width,
-            height = canvas.height;
-
-        var randomX = d3_random.normal(width / 2, 60),
-            randomY = d3_random.normal(height / 2, 60),
-            points = new Array(5);
-
-        for (var i = 0, n = points.length; i < n; ++i) points[i] = [randomX(), randomY()];
-
-        render();
-
-        /*window.addEventListener("mousemove", function(event) {
-          var rect = canvas.getBoundingClientRect(),
-              x = event.clientX - rect.left - canvas.clientLeft,
-              y = event.clientY - rect.top - canvas.clientTop;
-
-          points[0][0] = x;
-          points[0][1] = y;
-          render();
-        });*/
-
-        function render() {
-          context.clearRect(0, 0, width, height);
-
-          var hull = d3_polygon.hull(points);
-          context.beginPath();
-          context.moveTo(hull[0][0], hull[0][1]);
-          for (var i = 1, n = hull.length; i < n; ++i) {
-            context.lineTo(hull[i][0], hull[i][1]);
-          }
-          context.closePath();
-          context.fillStyle = "steelblue";
-          context.fill();
-          context.lineWidth = 15;
-          context.lineJoin = "round";
-          context.strokeStyle = "steelblue";
-          context.stroke();
-
-          context.beginPath();
-          for (var i = 0, n = points.length; i < n; ++i) {
-            context.moveTo(points[i][0] + 2.5, points[i][1]);
-            context.arc(points[i][0], points[i][1], 2.5, 0, 2 * Math.PI);
-          }
-          context.fillStyle = "white";
-          context.fill();
-          context.lineWidth = 1.5;
-          context.strokeStyle = "black";
-          context.stroke();
-        }
-    },
-    error: function(error_data){
-        console.log("error")
-        console.log(error_data)
-    }
-})
-function setChart(){
-
-
-
-}
-// var ctx = document.getElementById("myChart");
-{% endblock %}
-</script>
-
 {% block content %}
 
-<div class='text-center'>
-    <h3>Пример</h3>
+    <div class='text-center'>
+        <h3>Пример</h3>
         <h4>Условие задачи "Сборы на прогулку"</h4>
         <p>Нужно принять решение об экипировке для поездки на природу.</p>
         <p>Есть такие варианты:</p>
@@ -90,39 +13,33 @@ function setChart(){
         <p>Возможные состояния природы</p>
         <p>\(\beta_{1}\) - солнечная погода</p>
         <p>\(\beta_{2}\) - проливной дождь</p>
+        <p>Матрица потерь</p>
+        \begin{pmatrix}
+                          & \beta_{1} & \beta_{2} \\
+            \alpha_{1} & 0              & 1              \\
+            \alpha_{2} & 0,1            & 0,9            \\
+            \alpha_{3} & 0,6            & 0,4            \\
+        \end{pmatrix}
+        <p>Предположим \(\beta_{2}\) - контролируемое состояние.</p>
         <p>
-            Продолжая общую теорию. Пусть Задана матрица потерь L.
+            \(L^{*}_{2}\) = 0,7
         </p>
-        <p>Предположим \(\beta_{1}\) - контролируемое состояние.</p>
-        <div align=center>
-                    <table class="matrix">
-                        <tr>
-                            <td></td>
-                            <td>\(\beta_{1}\)</td>
-                            <td>\(\beta_{1}\)</td>
-                        </tr>
-                        <tr>
-                            <td>\(\alpha_{1}\)</td>
-                            <td>0</td>
-                            <td>1</td>
-                        </tr>
-                        <tr>
-                            <td>\(\alpha_{2}\)</td>
-                            <td>0,1</td>
-                            <td>0,9</td>
-                        </tr>
-                        <tr>
-                            <td>\(\alpha_{3}\)</td>
-                            <td>0,6</td>
-                            <td>0,4</td>
-                        </tr>
-                    </table>
-            </div>
-        <p>
-            \(L^{*}_{пороговое}\) = 0,7
-        </p>
-    <canvas width="960" height="700"></canvas>
+        <img src="{% static 'img/chart5.png' %}" class='img-fluid' />
+        <p>Прямая \(L^{*}_{2}\) = 0,7 пересекает полученное множество(в данной ситуации платежное множество состоит из
+            прямой) в точке \((L_{1};L^{*}_{2})\), которая находится между точками \(\alpha_{2}\) b \(\alpha_{3}\).
+            Составим матричное уравнение.</p>
+        $$x * \begin{pmatrix} l_{21}\\ l_{22} \end{pmatrix} + (1 - x) * \begin{pmatrix} l_{31}\\ l_{32}
+                \end{pmatrix} = \begin{pmatrix} L_{1}\\ L^{*}_{2} \end{pmatrix}$$
 
-</div>
+        $$x * \begin{pmatrix} 0,1\\ 0,9 \end{pmatrix} + (1 - x) * \begin{pmatrix} 0,6\\ 0,4
+                \end{pmatrix} = \begin{pmatrix} L_{1}\\ 0,7 \end{pmatrix}$$
+        <p>Решаем уравнение. Находим \(x\)</p>
+        <p>\(0,9 * x + (1 - x) * 0,4 = 0, 7\)</p>
+        <p>\(x = 0,6\)</p>
+        <p>Из \(0,1 * x + (1 - x) * 0,6 = L_{1}\)</p>
+        <p>\(L_{1} = 0,3\)</p>
+        <p>Рандомизированное решение - \(x^{*}_{Н-П} = (0; 0,6; 0,4)\)</p>
+        <a href='{% url "tutorial:random-training" %}' class="btn btn-outline-success btn-lg btn-block">Обучение</a>
+    </div>
 
 {% endblock content %}
