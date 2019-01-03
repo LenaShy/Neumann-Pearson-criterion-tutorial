@@ -5,6 +5,94 @@ from .forms import MatrixForm, RowsForm
 from .models import Matrix
 
 import math
+import random
+
+
+def training_for_random(request):
+    context = {}
+    matrix = MatrixForm()
+    context['matrix'] = matrix
+    if request.method == 'POST':
+        matrix = Matrix.objects.last()
+        context['threshold'] = round(matrix.threshold, 2)
+        context['controlled'] = matrix.state
+        context['a11'] = matrix.a11
+        context['a12'] = matrix.a12
+        context['a21'] = matrix.a21
+        context['a22'] = matrix.a22
+        context['a31'] = matrix.a31
+        context['a32'] = matrix.a32
+        context.pop('matrix', None)
+        context.pop('exclude_rows', None)
+        context.pop('answer', None)
+        if 'matrix' in request.POST:
+            a11 = float(request.POST.get('a11'))
+            a12 = float(request.POST.get('a12'))
+            a21 = float(request.POST.get('a21'))
+            a22 = float(request.POST.get('a22'))
+            a31 = float(request.POST.get('a31'))
+            a32 = float(request.POST.get('a32'))
+            state = request.POST.get('state')
+            context['controlled'] = state
+            matrix = Matrix.objects.create(a11=a11, a12=a12, a21=a21, a22=a22, a31=a31, a32=a32, state=state)
+            threshold = 0
+            if state == '\\(\\beta_{1}\\)':
+                answer_index = 0
+                threshold = random.uniform(min([a11, a21, a31]) - 1, max([a11, a21, a31]) + 1)
+                l1 = [a11, a21, a31]
+                l2 = [a12, a22, a32]
+                minl2 = min(l2)
+                minl2_index = l2.index(minl2)
+                clean_l1_idex = []
+                for item in l1:
+                    if item < threshold:
+                        clean_l1_idex.append(l1.index(item))
+                        if l2[l1.index(item)] == minl2_index:
+                            answer_index = minl2_index
+
+                if a11 > threshold:
+                    matrix.exclude_alpha1 = True
+                if a21 > threshold:
+                    matrix.exclude_alpha2 = True
+                if a31 > threshold:
+                    matrix.exclude_alpha3 = True
+                answer_list = [a12, a22, a32]
+                min_row = min(answer_list)
+                if min_row < threshold:
+                    matrix.losses = min_row
+                    i = 0
+                    for answer in answer_list:
+                        i += 1
+                        if answer == min_row:
+                            matrix.answers.append(i)
+            elif state == '\\(\\beta_{2}\\)':
+                threshold = random.uniform(min([a12, a22, a32]) - 1, max([a12, a22, a32]) + 1)
+
+                if a12 > threshold:
+                    matrix.exclude_alpha1 = True
+                if a22 > threshold:
+                    matrix.exclude_alpha2 = True
+                if a32 > threshold:
+                    matrix.exclude_alpha3 = True
+                answer_list = [a11, a21, a31]
+                min_row = min(answer_list)
+                if min_row < threshold:
+                    matrix.losses = min_row
+                    i = 0
+                    for answer in answer_list:
+                        i += 1
+                        if answer == min_row:
+                            matrix.answers.append(i)
+            matrix.threshold = threshold
+            matrix.save()
+            context['threshold'] = round(threshold, 2)
+            context['a11'] = a11
+            context['a12'] = a12
+            context['a21'] = a21
+            context['a22'] = a22
+            context['a31'] = a31
+            context['a32'] = a32
+    return render(request, 'training_for_random.html', context)
 
 
 def example_for_random(request):
