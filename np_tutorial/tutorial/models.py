@@ -17,7 +17,8 @@ class Matrix(models.Model):
     exclude_alpha2 = models.BooleanField(default=False)
     exclude_alpha3 = models.BooleanField(default=False)
     losses = models.FloatField(default=0)
-    answers = PickledObjectField(default=list)
+    answer_nrand = PickledObjectField(default=list)
+    answer_rand = PickledObjectField(default=list)
 
 
 class MatrixRow(models.Model):

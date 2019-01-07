@@ -37,55 +37,35 @@ def training_for_random(request):
             matrix = Matrix.objects.create(a11=a11, a12=a12, a21=a21, a22=a22, a31=a31, a32=a32, state=state)
             threshold = 0
             if state == '\\(\\beta_{1}\\)':
-                answer_index = 0
-                threshold = random.uniform(min([a11, a21, a31]) - 1, max([a11, a21, a31]) + 1)
+                answer = [0 for i in range(3)]
+                losses = 0
+                threshold = round(random.uniform(min([a11, a21, a31]) - 1, max([a11, a21, a31]) + 1), 2)
                 l1 = [a11, a21, a31]
                 l2 = [a12, a22, a32]
                 minl2 = min(l2)
                 minl2_index = l2.index(minl2)
-                clean_l1_idex = []
+                clean_l1_idnex = []
+                dirty_l1_index = []
                 for item in l1:
                     if item < threshold:
-                        clean_l1_idex.append(l1.index(item))
+                        clean_l1_idnex.append(l1.index(item))
                         if l2[l1.index(item)] == minl2_index:
-                            answer_index = minl2_index
+                            answer[minl2_index] = 1
+                    else:
+                        dirty_l1_index.append(l1.index(item))
+                if clean_l1_idnex:
+                    min_dirty_l1_index = l1.index(min([l1[index] for index in dirty_l1_index]))
+                    min_clean_l2_index = l2.index(min([l2[index] for index in clean_l1_idnex]))
+                    x = (threshold - l1[min_dirty_l1_index])/(l1[min_clean_l2_index] - l1[min_dirty_l1_index])
+                    answer[min_clean_l2_index] = x
+                    answer[min_dirty_l1_index] = 1 - x
+                    losses = x * l2[min_clean_l2_index] + (1 - x) * l2[min_dirty_l1_index]
 
-                if a11 > threshold:
-                    matrix.exclude_alpha1 = True
-                if a21 > threshold:
-                    matrix.exclude_alpha2 = True
-                if a31 > threshold:
-                    matrix.exclude_alpha3 = True
-                answer_list = [a12, a22, a32]
-                min_row = min(answer_list)
-                if min_row < threshold:
-                    matrix.losses = min_row
-                    i = 0
-                    for answer in answer_list:
-                        i += 1
-                        if answer == min_row:
-                            matrix.answers.append(i)
             elif state == '\\(\\beta_{2}\\)':
                 threshold = random.uniform(min([a12, a22, a32]) - 1, max([a12, a22, a32]) + 1)
-
-                if a12 > threshold:
-                    matrix.exclude_alpha1 = True
-                if a22 > threshold:
-                    matrix.exclude_alpha2 = True
-                if a32 > threshold:
-                    matrix.exclude_alpha3 = True
-                answer_list = [a11, a21, a31]
-                min_row = min(answer_list)
-                if min_row < threshold:
-                    matrix.losses = min_row
-                    i = 0
-                    for answer in answer_list:
-                        i += 1
-                        if answer == min_row:
-                            matrix.answers.append(i)
             matrix.threshold = threshold
             matrix.save()
-            context['threshold'] = round(threshold, 2)
+            context['threshold'] = threshold
             context['a11'] = a11
             context['a12'] = a12
             context['a21'] = a21
@@ -159,7 +139,7 @@ def training_for_nrandom(request):
                     for answer in answer_list:
                         i += 1
                         if answer == min_row:
-                            matrix.answers.append(i)
+                            matrix.answer_nrand.append(i)
             elif state == '\\(\\beta_{2}\\)':
                 threshold = (a12 + a22 + a32) / 3
                 if a12 > threshold:
@@ -176,7 +156,7 @@ def training_for_nrandom(request):
                     for answer in answer_list:
                         i += 1
                         if answer == min_row:
-                            matrix.answers.append(i)
+                            matrix.answer_nrand.append(i)
             matrix.threshold = threshold
             matrix.save()
             context['threshold'] = round(threshold, 2)
@@ -203,12 +183,12 @@ def training_for_nrandom(request):
                 context['answer'] = RowsForm()
         if 'answer' in request.POST:
             context['answer'] = RowsForm(request.POST)
-            if ('row1' in request.POST and 1 not in matrix.answers
-                or 'row1' not in request.POST and 1 in matrix.answers) \
-                    or ('row2' in request.POST and 2 not in matrix.answers
-                        or 'row2' not in request.POST and 2 in matrix.answers) \
-                    or ('row3' in request.POST and 3 not in matrix.answers
-                        or 'row3' not in request.POST and 3 in matrix.answers):
+            if ('row1' in request.POST and 1 not in matrix.answer_nrand
+                or 'row1' not in request.POST and 1 in matrix.answer_nrand) \
+                    or ('row2' in request.POST and 2 not in matrix.answer_nrand
+                        or 'row2' not in request.POST and 2 in matrix.answer_nrand) \
+                    or ('row3' in request.POST and 3 not in matrix.answer_nrand
+                        or 'row3' not in request.POST and 3 in matrix.answer_nrand ):
                 context['message2'] = 'Вы ошиблись!'
                 context['color'] = 'color: red;'
             else:
