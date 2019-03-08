@@ -10,22 +10,14 @@ import random
 
 def training_for_random(request):
     context = {}
-    matrix = MatrixForm()
-    context['matrix'] = matrix
+    matrix_form = MatrixForm()
+    context['matrix_form'] = matrix_form
     if request.method == 'POST':
-        matrix = Matrix.objects.last()
-        context['threshold'] = round(matrix.threshold, 2)
-        context['controlled'] = matrix.state
-        context['a11'] = matrix.a11
-        context['a12'] = matrix.a12
-        context['a21'] = matrix.a21
-        context['a22'] = matrix.a22
-        context['a31'] = matrix.a31
-        context['a32'] = matrix.a32
-        context.pop('matrix', None)
-        context.pop('exclude_rows', None)
-        context.pop('answer', None)
-        if 'matrix' in request.POST:
+        #context.pop('exclude_rows', None)
+        #context.pop('answer', None)
+        # this part works when there are no input
+        context.pop('matrix_form', None)
+        if 'matrix_input' in request.POST:
             a11 = float(request.POST.get('a11'))
             a12 = float(request.POST.get('a12'))
             a21 = float(request.POST.get('a21'))
@@ -72,6 +64,33 @@ def training_for_random(request):
             context['a22'] = a22
             context['a31'] = a31
             context['a32'] = a32
+            context['exclude_rows'] = RowsForm()
+        else:
+            # this part works when there are no input
+            matrix = Matrix.objects.last()
+            if matrix is not None:
+                context['threshold'] = round(matrix.threshold, 2)
+                context['controlled'] = matrix.state
+                context['a11'] = matrix.a11
+                context['a12'] = matrix.a12
+                context['a21'] = matrix.a21
+                context['a22'] = matrix.a22
+                context['a31'] = matrix.a31
+                context['a32'] = matrix.a32
+        if 'exclude_rows' in request.POST:
+            context['exclude_rows'] = RowsForm(request.POST)
+            if ('row1' in request.POST and matrix.exclude_alpha1 is not True
+                or 'row1' not in request.POST and matrix.exclude_alpha1 is True) \
+                    or ('row2' in request.POST and matrix.exclude_alpha2 is not True
+                        or 'row2' not in request.POST and matrix.exclude_alpha2 is True) \
+                    or ('row3' in request.POST and matrix.exclude_alpha3 is not True
+                        or 'row3' not in request.POST and matrix.exclude_alpha3 is True):
+                context['message1'] = 'Вы ошиблись!'
+                context['color'] = 'color: red;'
+            else:
+                context['message1'] = 'Правильный ответ!'
+                context['color'] = 'color: green;'
+                context['answer'] = RowsForm()
     return render(request, 'training_for_random.html', context)
 
 
@@ -101,17 +120,18 @@ def training_for_nrandom(request):
     context['matrix'] = matrix
     if request.method == 'POST':
         matrix = Matrix.objects.last()
-        context['threshold'] = round(matrix.threshold, 2)
-        context['controlled'] = matrix.state
-        context['a11'] = matrix.a11
-        context['a12'] = matrix.a12
-        context['a21'] = matrix.a21
-        context['a22'] = matrix.a22
-        context['a31'] = matrix.a31
-        context['a32'] = matrix.a32
-        context.pop('matrix', None)
-        context.pop('exclude_rows', None)
-        context.pop('answer', None)
+        if matrix is not None:
+            context['threshold'] = round(matrix.threshold, 2)
+            context['controlled'] = matrix.state
+            context['a11'] = matrix.a11
+            context['a12'] = matrix.a12
+            context['a21'] = matrix.a21
+            context['a22'] = matrix.a22
+            context['a31'] = matrix.a31
+            context['a32'] = matrix.a32
+            context.pop('matrix', None)
+            context.pop('exclude_rows', None)
+            context.pop('answer', None)
         if 'matrix' in request.POST:
             a11 = float(request.POST.get('a11'))
             a12 = float(request.POST.get('a12'))
