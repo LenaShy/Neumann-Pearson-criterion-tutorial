@@ -92,29 +92,29 @@ function setChart(){
               </div>
             </form> -->
             {% if not end_of_tutorial %}
-                {% if matrix %}
+                {% if matrix_form %}
                     <h3>Задайте матрицу потерь:</h3>
                     <form method="post">{% csrf_token %}
-                    <div align=center>
-                        <table class="matrix">
-                            <tr>
-                                <td>{{ matrix.a11 }}</td>
-                                <td>{{ matrix.a12 }}</td>
-                            </tr>
-                            <tr>
-                                <td>{{ matrix.a21 }}</td>
-                                <td>{{ matrix.a22 }}</td>
-                            </tr>
-                            <tr>
-                                <td>{{ matrix.a31 }}</td>
-                                <td>{{ matrix.a32 }}</td>
-                            </tr>
-                        </table>
-                    </div>
-                    <h3>Выберите контролируемое состояние природы:</h3>
-                    {{ matrix.state }}
-                    <input type="submit" value="Ввод" name="matrix"/>
-                </form>
+                        <div align=center>
+                            <table class="matrix">
+                                <tr>
+                                    <td>{{ matrix_form.a11 }}</td>
+                                    <td>{{ matrix_form.a12 }}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{ matrix_form.a21 }}</td>
+                                    <td>{{ matrix_form.a22 }}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{ matrix_form.a31 }}</td>
+                                    <td>{{ matrix_form.a32 }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <h3>Выберите контролируемое состояние природы:</h3>
+                        {{ matrix_form.state }}
+                        <input type="submit" value="Ввод" name="matrix_input"/>
+                    </form>
                 {% else %}
                     <div align=center>
                         <table class="matrix">
@@ -131,10 +131,11 @@ function setChart(){
                                 <td>{{ a32 }}</td>
                             </tr>
                         </table>
-                </div>
+                    </div>
                     <h4>Контролирумое состояние: {{ controlled }}</h4>
                     <br/>
                     <h4>\(L^{*}_{пороговое}\) = {{ threshold }}</h4>
+                    <h2>Тут будет график!</h2>
                 {% endif %}
                 {% if exclude_rows %}
                     <hr/>
