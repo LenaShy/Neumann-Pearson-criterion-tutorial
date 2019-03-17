@@ -1,11 +1,37 @@
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
+from django.urls import reverse
 
 from .forms import MatrixForm, RowsForm
 from .models import Matrix
 
 import math
 import random
+
+
+def temp_decision_handling(l1, l2):
+    answer = [0 for i in range(3)]
+    losses = 0
+    threshold = round(random.uniform(min(l1) - 1, max(l2) + 1), 2)
+    '''minl2 = min(l2)
+    minl2_index = l2.index(minl2)
+    clean_l1_idnex = []
+    dirty_l1_index = []
+    for item in l1:
+        if item < threshold:
+            clean_l1_idnex.append(l1.index(item))
+            if l2[l1.index(item)] == minl2_index:
+                answer[minl2_index] = 1
+        else:
+            dirty_l1_index.append(l1.index(item))
+    if clean_l1_idnex:
+        min_dirty_l1_index = l1.index(min([l1[index] for index in dirty_l1_index]))
+        min_clean_l2_index = l2.index(min([l2[index] for index in clean_l1_idnex]))
+        x = (threshold - l1[min_dirty_l1_index]) / (l1[min_clean_l2_index] - l1[min_dirty_l1_index])
+        answer[min_clean_l2_index] = x
+        answer[min_dirty_l1_index] = 1 - x
+        losses = x * l2[min_clean_l2_index] + (1 - x) * l2[min_dirty_l1_index]'''
+    return answer, losses, threshold
 
 
 def training_for_random(request):
@@ -29,54 +55,31 @@ def training_for_random(request):
             matrix = Matrix.objects.create(a11=a11, a12=a12, a21=a21, a22=a22, a31=a31, a32=a32, state=state)
             threshold = 0
             if state == '\\(\\beta_{1}\\)':
-                answer = [0 for i in range(3)]
-                losses = 0
-                threshold = round(random.uniform(min([a11, a21, a31]) - 1, max([a11, a21, a31]) + 1), 2)
                 l1 = [a11, a21, a31]
                 l2 = [a12, a22, a32]
-                minl2 = min(l2)
-                minl2_index = l2.index(minl2)
-                clean_l1_idnex = []
-                dirty_l1_index = []
-                for item in l1:
-                    if item < threshold:
-                        clean_l1_idnex.append(l1.index(item))
-                        if l2[l1.index(item)] == minl2_index:
-                            answer[minl2_index] = 1
-                    else:
-                        dirty_l1_index.append(l1.index(item))
-                if clean_l1_idnex:
-                    min_dirty_l1_index = l1.index(min([l1[index] for index in dirty_l1_index]))
-                    min_clean_l2_index = l2.index(min([l2[index] for index in clean_l1_idnex]))
-                    x = (threshold - l1[min_dirty_l1_index])/(l1[min_clean_l2_index] - l1[min_dirty_l1_index])
-                    answer[min_clean_l2_index] = x
-                    answer[min_dirty_l1_index] = 1 - x
-                    losses = x * l2[min_clean_l2_index] + (1 - x) * l2[min_dirty_l1_index]
+                answer, losses, threshold = temp_decision_handling(l1, l2)
 
             elif state == '\\(\\beta_{2}\\)':
-                threshold = random.uniform(min([a12, a22, a32]) - 1, max([a12, a22, a32]) + 1)
+                pass
             matrix.threshold = threshold
             matrix.save()
-            context['threshold'] = threshold
-            context['a11'] = a11
-            context['a12'] = a12
-            context['a21'] = a21
-            context['a22'] = a22
-            context['a31'] = a31
-            context['a32'] = a32
-            context['exclude_rows'] = RowsForm()
+            context['matrix'] = matrix
+            #context['exclude_rows'] = RowsForm()
+            #return HttpResponseRedirect(reverse('tutorial:random-training'))
+            request.session.pop('matrix_input')
         else:
             # this part works when there are no input
             matrix = Matrix.objects.last()
             if matrix is not None:
-                context['threshold'] = round(matrix.threshold, 2)
+                context['matrix'] = matrix
+                '''context['threshold'] = round(matrix.threshold, 2)
                 context['controlled'] = matrix.state
                 context['a11'] = matrix.a11
                 context['a12'] = matrix.a12
                 context['a21'] = matrix.a21
                 context['a22'] = matrix.a22
                 context['a31'] = matrix.a31
-                context['a32'] = matrix.a32
+                context['a32'] = matrix.a32'''
         if 'exclude_rows' in request.POST:
             context['exclude_rows'] = RowsForm(request.POST)
             if ('row1' in request.POST and matrix.exclude_alpha1 is not True
