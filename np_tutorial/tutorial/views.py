@@ -34,9 +34,9 @@ def temp_decision_handling(l1, l2):
     return answer, losses, threshold
 
 
-def training_for_random(request):
+'''def training_for_random(request):
     context = {}
-    matrix_form = MatrixForm()
+    matrix_form = MatrixForm(5)
     context['matrix_form'] = matrix_form
     if request.method == 'POST':
         #context.pop('exclude_rows', None)
@@ -72,14 +72,14 @@ def training_for_random(request):
             matrix = Matrix.objects.last()
             if matrix is not None:
                 context['matrix'] = matrix
-                '''context['threshold'] = round(matrix.threshold, 2)
+                context['threshold'] = round(matrix.threshold, 2)
                 context['controlled'] = matrix.state
                 context['a11'] = matrix.a11
                 context['a12'] = matrix.a12
                 context['a21'] = matrix.a21
                 context['a22'] = matrix.a22
                 context['a31'] = matrix.a31
-                context['a32'] = matrix.a32'''
+                context['a32'] = matrix.a32
         if 'exclude_rows' in request.POST:
             context['exclude_rows'] = RowsForm(request.POST)
             if ('row1' in request.POST and matrix.exclude_alpha1 is not True
@@ -94,7 +94,7 @@ def training_for_random(request):
                 context['message1'] = 'Правильный ответ!'
                 context['color'] = 'color: green;'
                 context['answer'] = RowsForm()
-    return render(request, 'training_for_random.html', context)
+    return render(request, 'training_for_random.html', context)'''
 
 
 def example_for_random(request):
@@ -119,9 +119,11 @@ def example_for_nrandom(request):
 
 def training_for_nrandom(request):
     context = {}
-    matrix = MatrixForm()
-    context['matrix'] = matrix
     if request.method == 'POST':
+        if 'rows_number' in request.POST:
+            matrix = MatrixForm(5)
+            context['matrix'] = matrix
+    '''if request.method == 'POST':
         matrix = Matrix.objects.last()
         if matrix is not None:
             context['threshold'] = round(matrix.threshold, 2)
@@ -225,5 +227,5 @@ def training_for_nrandom(request):
                 context['end_of_tutorial'] = True
             else:
                 context['message3'] = 'Вы ошиблись!'
-                context['color'] = 'color: red;'
+                context['color'] = 'color: red;'''
     return render(request, 'training_for_nrandom.html', context)

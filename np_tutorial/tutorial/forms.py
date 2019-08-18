@@ -19,7 +19,7 @@ class MatrixForm(forms.ModelForm):
 
     class Meta:
         model = Matrix
-        fields = ['a11', 'a12', 'a21', 'a22', 'a31', 'a32']
+        fields = '__all__'
 
     state = forms.ChoiceField(choices=CHOICES, widget=forms.RadioSelect())
 
