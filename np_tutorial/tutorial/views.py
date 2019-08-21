@@ -119,10 +119,9 @@ def example_for_nrandom(request):
 
 def training_for_nrandom(request):
     context = {}
-    if request.method == 'POST':
-        if 'rows_number' in request.POST:
-            matrix = MatrixForm(5)
-            context['matrix'] = matrix
+    matrix = MatrixForm()
+    context['matrix'] = matrix
+
     '''if request.method == 'POST':
         matrix = Matrix.objects.last()
         if matrix is not None:

@@ -10,17 +10,14 @@
 {% block content %}
     <div class='text-center'>
         <h1>Раздел обучения</h1>
-
-            <h2> Ввведите количество решений n</h2>
-
-
-            <form method='POST' action='' class="form">{% csrf_token %}
-              <div class='input-group col-md-3' >
-                <input class="form-control" type="number" name='rows_number'>
-                <button class="btn btn-outline-success" type="submit">Ввод</button>
-              </div>
-            </form>
-
+            {% if matrix %}
+                <h3>Задайте матрицу потерь:</h3>
+                <form method="post">{% csrf_token %}
+                    <div align=center>
+                        {{ matrix }}
+                    </div>
+                </form>
+            {% endif %}
             <h1 style="color: red"> do not pay attention to below text now</h1>
             {% if not end_of_tutorial %}
                 {% if matrix %}
