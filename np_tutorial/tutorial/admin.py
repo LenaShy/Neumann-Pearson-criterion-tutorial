@@ -1,9 +1,9 @@
 from django.contrib import admin
-from .models import Matrix, MatrixRow
+from .models import Matrix, Row
 
 
 class MatrixRowInline(admin.TabularInline):
-    model = MatrixRow
+    model = Row
 
 
 class MatrixAdmin(admin.ModelAdmin):
@@ -13,4 +13,4 @@ class MatrixAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Matrix, MatrixAdmin)
-admin.site.register(MatrixRow)
+admin.site.register(Row)

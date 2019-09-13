@@ -10,15 +10,19 @@
 {% block content %}
     <div class='text-center'>
         <h1>Раздел обучения</h1>
-            {% if matrix %}
-                <h3>Задайте матрицу потерь:</h3>
-                <form method="post">{% csrf_token %}
-                    <div align=center>
-                        {{ matrix }}
-                    </div>
-                </form>
-            {% endif %}
-            <h1 style="color: red"> do not pay attention to below text now</h1>
+            <form method='POST' action='{% url "tutorial:matrix-update" %}' class="form"> {% csrf_token %}
+                <input type='hidden' name='matrix_id' value='{{ matrix.id }}' />
+                <button type='submit'>Add row</button>
+                <!--{% if product in cart.products.all %}
+                    In cart <button type='submit' class='btn btn-link'>Remove?</button>
+                {% else %}
+
+                {% endif %}-->
+            </form>
+            {% for row in matrix.get_row_fields %}
+                {{ row }}
+            {% endfor %}
+            <!--<h1 style="color: red"> do not pay attention to below text now</h1>
             {% if not end_of_tutorial %}
                 {% if matrix %}
                     <h3>Задайте матрицу потерь:</h3>
@@ -103,7 +107,7 @@
                 {% endif %}
             {% else %}
                 <h1>Обучение пройдено!</h1>
-            {% endif %}
+            {% endif %}-->
 
 
 

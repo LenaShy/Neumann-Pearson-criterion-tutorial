@@ -1,9 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse
+from django.forms import modelform_factory
 
 from .forms import MatrixForm, RowsForm
-from .models import Matrix
+from .models import Matrix, Row
 
 import math
 import random
@@ -117,9 +118,43 @@ def example_for_nrandom(request):
     return render(request, 'example_for_nrandom.html', {})
 
 
+def row_create(request):
+    matrix_id = request.session.get('matrix_id', None)
+    qs = Matrix.objects.filter(id=matrix_id)
+    if qs.count() == 1:
+        matrix_obj = qs.first()
+        row = Row(a0=float(request.POST.get('a0')),
+                  a1=float(request.POST.get('a1')),
+                  matrix=matrix_obj)
+        row.save()
+    else:
+        pass
+    print('row create!!!' + str(request.POST))
+    return HttpResponseRedirect('matrix_create')
+
+
+def row_remove(request):
+    pass
+
+
+def matrix_create(request):
+    matrix_id = request.session.get('matrix_id', None)
+    qs = Matrix.objects.filter(id=matrix_id)
+    if qs.count() == 1:
+        matrix_obj = qs.first()
+    else:
+        matrix_obj = Matrix.objects.create()
+        request.session['matrix_id'] = matrix_obj.id
+    context = {
+        'matrix': matrix_obj
+    }
+    return render(request, 'matrix_create.html', context)
+
+
 def training_for_nrandom(request):
     context = {}
     matrix = MatrixForm()
+    matrix.save()
     context['matrix'] = matrix
 
     '''if request.method == 'POST':
