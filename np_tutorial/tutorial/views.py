@@ -118,23 +118,26 @@ def example_for_nrandom(request):
     return render(request, 'example_for_nrandom.html', {})
 
 
-def row_create(request):
+def row_update(request):
     matrix_id = request.session.get('matrix_id', None)
     qs = Matrix.objects.filter(id=matrix_id)
     if qs.count() == 1:
         matrix_obj = qs.first()
+    row_id = request.POST.get('row_id')
+    if row_id is not None:
+        try:
+            row_obj = Row.objects.get(id=row_id)
+        except Row.DoesNotExist:
+            return redirect("tutorial:matrix-create")
+        if row_obj in matrix_obj.matrix.all():
+            row_obj.delete()
+    else:
         row = Row(a0=float(request.POST.get('a0')),
                   a1=float(request.POST.get('a1')),
                   matrix=matrix_obj)
         row.save()
-    else:
-        pass
-    print('row create!!!' + str(request.POST))
-    return HttpResponseRedirect('matrix_create')
 
-
-def row_remove(request):
-    pass
+    return redirect("tutorial:matrix-create")
 
 
 def matrix_create(request):
@@ -153,9 +156,9 @@ def matrix_create(request):
 
 def training_for_nrandom(request):
     context = {}
-    matrix = MatrixForm()
-    matrix.save()
-    context['matrix'] = matrix
+    #matrix = MatrixForm()
+    #matrix.save()
+    #context['matrix'] = matrix
 
     '''if request.method == 'POST':
         matrix = Matrix.objects.last()
