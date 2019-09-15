@@ -137,10 +137,10 @@ def row_update(request):
                   matrix=matrix_obj)
         row.save()
 
-    return redirect("tutorial:matrix-create")
+    return redirect("tutorial:matrix-home")
 
 
-def matrix_create(request):
+def matrix_home(request):
     matrix_id = request.session.get('matrix_id', None)
     qs = Matrix.objects.filter(id=matrix_id)
     if qs.count() == 1:
@@ -151,7 +151,7 @@ def matrix_create(request):
     context = {
         'matrix': matrix_obj
     }
-    return render(request, 'matrix_create.html', context)
+    return render(request, 'matrix_home.html', context)
 
 
 def training_for_nrandom(request):
