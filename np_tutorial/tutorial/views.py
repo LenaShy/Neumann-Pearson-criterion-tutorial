@@ -137,7 +137,7 @@ def row_update(request):
                   matrix=matrix_obj)
         row.save()
 
-    return redirect("tutorial:matrix-home")
+    return redirect("tutorial:training_nr")
 
 
 def matrix_home(request):
@@ -151,15 +151,20 @@ def matrix_home(request):
     context = {
         'matrix': matrix_obj
     }
-    return render(request, 'matrix_home.html', context)
+    return render(request, 'training_for_nrandom.html', context)
 
 
 def training_for_nrandom(request):
-    context = {}
-    #matrix = MatrixForm()
-    #matrix.save()
-    #context['matrix'] = matrix
-
+    matrix_id = request.session.get('matrix_id', None)
+    qs = Matrix.objects.filter(id=matrix_id)
+    if qs.count() == 1:
+        matrix_obj = qs.first()
+    else:
+        matrix_obj = Matrix.objects.create()
+        request.session['matrix_id'] = matrix_obj.id
+    context = {
+        'matrix': matrix_obj
+    }
     '''if request.method == 'POST':
         matrix = Matrix.objects.last()
         if matrix is not None:
