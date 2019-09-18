@@ -118,6 +118,20 @@ def example_for_nrandom(request):
     return render(request, 'example_for_nrandom.html', {})
 
 
+def state_update(request):
+    matrix_id = request.session.get('matrix_id', None)
+    qs = Matrix.objects.filter(id=matrix_id)
+    if qs.count() == 1:
+        matrix_obj = qs.first()
+    state = request.POST.get('state')
+    if state == 'beta1':
+        matrix_obj.controlled_state = '0'
+    elif state == 'beta2':
+        matrix_obj.controlled_state = '1'
+    matrix_obj.save()
+    return redirect("tutorial:training_nr")
+
+
 def row_update(request):
     matrix_id = request.session.get('matrix_id', None)
     qs = Matrix.objects.filter(id=matrix_id)
@@ -140,18 +154,15 @@ def row_update(request):
     return redirect("tutorial:training_nr")
 
 
-def matrix_home(request):
-    matrix_id = request.session.get('matrix_id', None)
-    qs = Matrix.objects.filter(id=matrix_id)
-    if qs.count() == 1:
-        matrix_obj = qs.first()
-    else:
-        matrix_obj = Matrix.objects.create()
-        request.session['matrix_id'] = matrix_obj.id
-    context = {
-        'matrix': matrix_obj
-    }
-    return render(request, 'training_for_nrandom.html', context)
+def threshold(matrix):
+    a = []
+    for row in matrix.matrix.all():
+        if matrix.controlled_state == '0':
+            a.append(row.a0)
+        else:
+            a.append(row.a1)
+    thrshld = round(random.uniform(min(a) - 1, max(a) + 1), 2)
+    return thrshld
 
 
 def training_for_nrandom(request):
@@ -162,8 +173,10 @@ def training_for_nrandom(request):
     else:
         matrix_obj = Matrix.objects.create()
         request.session['matrix_id'] = matrix_obj.id
+    #thrshld = threshold(matrix_obj)
     context = {
         'matrix': matrix_obj
+        #'threshold': thrshld
     }
     '''if request.method == 'POST':
         matrix = Matrix.objects.last()

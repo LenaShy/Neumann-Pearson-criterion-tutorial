@@ -1,31 +1,31 @@
 <div align=center>
-        <table class="matrix">
-            <tr>
-                <td></td>
-                <td>\(\beta_{1}\)</td>
-                <td>\(\beta_{2}\)</td>
-                <td></td>
-            </tr>
-        {% for row in matrix.matrix.all %}
-            <tr>
-                <td>\(\alpha_{ {{ forloop.counter }} }\)</td>
-                <td>{{ row.a0 }}</td>
-                <td>{{ row.a1 }}</td>
-                <td>
-                    <form method='POST' action='{% url "tutorial:row-update" %}' class="form"> {% csrf_token %}
-                        <input type='hidden' name='row_id' value='{{ row.id }}' />
+    <h3>Задайте матрицу потерь:</h3>
+    <table class="matrix">
+        <tr>
+            <td></td>
+            <td>\(\beta_{1}\)</td>
+            <td>\(\beta_{2}\)</td>
+            <td></td>
+        </tr>
+    {% for row in matrix.matrix.all %}
+        <tr>
+            <td>\(\alpha_{ {{ forloop.counter }} }\)</td>
+            <td>{{ row.a0 }}</td>
+            <td>{{ row.a1 }}</td>
+            <td>
+                <form method='POST' action='{% url "tutorial:row-update" %}' class="form"> {% csrf_token %}
+                    <input type='hidden' name='row_id' value='{{ row.id }}' />
 
-                        <button type='submit' class='btn btn-link btn-sm' style="padding:0px;cursor: pointer;">Remove row</button>
-                    </form>
-                </td>
-            </tr>
-        {% endfor %}
-        </table>
-        <form method='POST' action='{% url "tutorial:row-update" %}' class="form"> {% csrf_token %}
-            <input name='a0'/>
-            <input name='a1'/>
-            <input type='hidden' name='matrix_id' value='{{ matrix.id }}' />
-            <button type='submit'>Add row</button>
-        </form>
-        <hr>
-    </div>
+                    <button type='submit' class='btn btn-link btn-sm' style="padding:0px;cursor: pointer;">Удалить строку</button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
+    <form method='POST' action='{% url "tutorial:row-update" %}' class="form"> {% csrf_token %}
+        <input name='a0'/>
+        <input name='a1'/>
+        <input type='hidden' name='matrix_id' value='{{ matrix.id }}' />
+        <button type='submit'>Добавить строку</button>
+    </form>
+</div>
