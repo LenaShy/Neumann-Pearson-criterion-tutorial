@@ -4,9 +4,8 @@
     <list default="true" id="c4798ff7-3a9b-4db8-9d85-91274303b671" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/np_tutorial/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/np_tutorial/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/np_tutorial/tutorial/templates/example_for_nrandom.html" beforeDir="false" afterPath="$PROJECT_DIR$/np_tutorial/tutorial/templates/example_for_nrandom.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/np_tutorial/tutorial/templates/matrix_create.html" beforeDir="false" afterPath="$PROJECT_DIR$/np_tutorial/tutorial/templates/matrix_create.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/np_tutorial/tutorial/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/np_tutorial/tutorial/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/np_tutorial/tutorial/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/np_tutorial/tutorial/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/np_tutorial/tutorial/templates/training_for_nrandom.html" beforeDir="false" afterPath="$PROJECT_DIR$/np_tutorial/tutorial/templates/training_for_nrandom.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/np_tutorial/tutorial/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/np_tutorial/tutorial/views.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -23,11 +22,6 @@
       </list>
     </option>
   </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>answers</find>
-    </findStrings>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -40,11 +34,12 @@
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\elena\PycharmProjects\Neumann-Pearson-criterion-tutorial\np_tutorial" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\elena\PycharmProjects\Neumann-Pearson-criterion-tutorial\np_tutorial\tutorial\templates" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\oshynk\PycharmProjects\Neumann-Pearson-criterion-tutorial\np_tutorial\tutorial\templates\tutorial" />
+      <recent name="C:\Users\elena\PycharmProjects\Neumann-Pearson-criterion-tutorial\np_tutorial" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -206,15 +201,6 @@
     </task>
     <option name="localTasksCounter" value="13" />
     <servers />
-  </component>
-  <component name="TodoView">
-    <todo-panel id="selected-file">
-      <is-autoscroll-to-source value="true" />
-    </todo-panel>
-    <todo-panel id="all">
-      <are-packages-shown value="true" />
-      <is-autoscroll-to-source value="true" />
-    </todo-panel>
   </component>
   <component name="UnknownFeatures">
     <option featureType="com.intellij.fileTypeFactory" implementationName="*.js" />

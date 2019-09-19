@@ -118,6 +118,20 @@ def example_for_nrandom(request):
     return render(request, 'example_for_nrandom.html', {})
 
 
+def state_update(request):
+    matrix_id = request.session.get('matrix_id', None)
+    qs = Matrix.objects.filter(id=matrix_id)
+    if qs.count() == 1:
+        matrix_obj = qs.first()
+    state = request.POST.get('state')
+    if state == 'beta1':
+        matrix_obj.controlled_state = '0'
+    elif state == 'beta2':
+        matrix_obj.controlled_state = '1'
+    matrix_obj.save()
+    return redirect("tutorial:training_nr")
+
+
 def row_update(request):
     matrix_id = request.session.get('matrix_id', None)
     qs = Matrix.objects.filter(id=matrix_id)
@@ -136,30 +150,37 @@ def row_update(request):
                   a1=float(request.POST.get('a1')),
                   matrix=matrix_obj)
         row.save()
+    request.session['row_updated'] = True
+    return redirect("tutorial:training_nr")
 
-    return redirect("tutorial:matrix-create")
+
+def threshold(matrix):
+    a = []
+    for row in matrix.matrix.all():
+        if matrix.controlled_state == '0':
+            a.append(row.a0)
+        else:
+            a.append(row.a1)
+    thrshld = round(random.uniform(min(a) - 1, max(a) + 1), 2)
+    return thrshld
 
 
-def matrix_create(request):
+def training_for_nrandom(request):
     matrix_id = request.session.get('matrix_id', None)
+    row_updated = request.session.get('row_updated', None)
     qs = Matrix.objects.filter(id=matrix_id)
     if qs.count() == 1:
         matrix_obj = qs.first()
     else:
         matrix_obj = Matrix.objects.create()
         request.session['matrix_id'] = matrix_obj.id
+    if row_updated is True:
+        matrix_obj.threshold = threshold(matrix_obj)
+        matrix_obj.save()
+        request.session['row_updated'] = False
     context = {
         'matrix': matrix_obj
     }
-    return render(request, 'matrix_create.html', context)
-
-
-def training_for_nrandom(request):
-    context = {}
-    #matrix = MatrixForm()
-    #matrix.save()
-    #context['matrix'] = matrix
-
     '''if request.method == 'POST':
         matrix = Matrix.objects.last()
         if matrix is not None:

@@ -1,0 +1,16 @@
+<div align=center>
+    <h3>Выберите контролируемое состояние природы:</h3>
+    <form method='POST' action='{% url "tutorial:state-update" %}' class="form"> {% csrf_token %}
+        {% if matrix.controlled_state == "0" %}
+            <input name="state" type="radio" value="beta1" checked>\(\beta_{1}\)</p>
+            <input name="state" type="radio" value="beta2">\(\beta_{2}\)</p>
+        {% elif matrix.controlled_state == "1" %}
+            <input name="state" type="radio" value="beta1">\(\beta_{1}\)</p>
+            <input name="state" type="radio" value="beta2" checked>\(\beta_{2}\)</p>
+        {% else %}
+            <input name="state" type="radio" value="beta1">\(\beta_{1}\)</p>
+            <input name="state" type="radio" value="beta2">\(\beta_{2}\)</p>
+        {% endif %}
+        <button type='submit'>Выбрать состояние</button>
+    </form>
+</div>
