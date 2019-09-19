@@ -124,10 +124,12 @@ def state_update(request):
     if qs.count() == 1:
         matrix_obj = qs.first()
     state = request.POST.get('state')
-    if state == 'beta1':
+    if state == 'beta1' and matrix_obj.controlled_state == '1':
         matrix_obj.controlled_state = '0'
-    elif state == 'beta2':
+        threshold(matrix_obj)
+    elif state == 'beta2' and matrix_obj.controlled_state == '0':
         matrix_obj.controlled_state = '1'
+        threshold(matrix_obj)
     matrix_obj.save()
     return redirect("tutorial:training_nr")
 
@@ -150,34 +152,33 @@ def row_update(request):
                   a1=float(request.POST.get('a1')),
                   matrix=matrix_obj)
         row.save()
-    request.session['row_updated'] = True
+    threshold(matrix_obj)
     return redirect("tutorial:training_nr")
 
 
 def threshold(matrix):
-    a = []
-    for row in matrix.matrix.all():
-        if matrix.controlled_state == '0':
-            a.append(row.a0)
-        else:
-            a.append(row.a1)
-    thrshld = round(random.uniform(min(a) - 1, max(a) + 1), 2)
-    return thrshld
+    if len(matrix.matrix.all()) != 0:
+        a = []
+        matrix_state = matrix.controlled_state
+        for row in matrix.matrix.all():
+            if matrix_state == '0':
+                a.append(row.a0)
+            else:
+                a.append(row.a1)
+        thrshld = round(random.uniform(min(a) - 1, max(a) + 1), 2)
+        matrix.threshold = thrshld
+        matrix.save()
+    return
 
 
 def training_for_nrandom(request):
     matrix_id = request.session.get('matrix_id', None)
-    row_updated = request.session.get('row_updated', None)
     qs = Matrix.objects.filter(id=matrix_id)
     if qs.count() == 1:
         matrix_obj = qs.first()
     else:
         matrix_obj = Matrix.objects.create()
         request.session['matrix_id'] = matrix_obj.id
-    if row_updated is True:
-        matrix_obj.threshold = threshold(matrix_obj)
-        matrix_obj.save()
-        request.session['row_updated'] = False
     context = {
         'matrix': matrix_obj
     }
