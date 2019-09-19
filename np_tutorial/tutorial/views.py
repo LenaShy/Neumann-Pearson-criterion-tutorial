@@ -150,7 +150,7 @@ def row_update(request):
                   a1=float(request.POST.get('a1')),
                   matrix=matrix_obj)
         row.save()
-
+    request.session['row_updated'] = True
     return redirect("tutorial:training_nr")
 
 
@@ -167,16 +167,19 @@ def threshold(matrix):
 
 def training_for_nrandom(request):
     matrix_id = request.session.get('matrix_id', None)
+    row_updated = request.session.get('row_updated', None)
     qs = Matrix.objects.filter(id=matrix_id)
     if qs.count() == 1:
         matrix_obj = qs.first()
     else:
         matrix_obj = Matrix.objects.create()
         request.session['matrix_id'] = matrix_obj.id
-    #thrshld = threshold(matrix_obj)
+    if row_updated is True:
+        matrix_obj.threshold = threshold(matrix_obj)
+        matrix_obj.save()
+        request.session['row_updated'] = False
     context = {
         'matrix': matrix_obj
-        #'threshold': thrshld
     }
     '''if request.method == 'POST':
         matrix = Matrix.objects.last()

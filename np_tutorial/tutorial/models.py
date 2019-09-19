@@ -11,6 +11,7 @@ class Matrix(models.Model):
     )
     name = models.CharField(max_length=20, blank=True, null=True)
     controlled_state = models.CharField(max_length=10, choices=STATE_CHOICES)
+    threshold = models.FloatField(default=0)
 
     def __str__(self):
         return str(self.id)

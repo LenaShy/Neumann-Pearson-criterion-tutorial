@@ -2,14 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c4798ff7-3a9b-4db8-9d85-91274303b671" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/np_tutorial/tutorial/templates/tutorial/snippets/controlled_state.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/np_tutorial/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/np_tutorial/db.sqlite3" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/np_tutorial/tutorial/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/np_tutorial/tutorial/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/np_tutorial/tutorial/templates/matrix_home.html" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/np_tutorial/tutorial/templates/training_for_nrandom.html" beforeDir="false" afterPath="$PROJECT_DIR$/np_tutorial/tutorial/templates/training_for_nrandom.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/np_tutorial/tutorial/templates/tutorial/snippets/matrix.html" beforeDir="false" afterPath="$PROJECT_DIR$/np_tutorial/tutorial/templates/tutorial/snippets/matrix.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/np_tutorial/tutorial/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/np_tutorial/tutorial/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/np_tutorial/tutorial/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/np_tutorial/tutorial/views.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
