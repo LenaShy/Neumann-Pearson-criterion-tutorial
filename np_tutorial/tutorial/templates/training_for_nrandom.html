@@ -23,5 +23,8 @@
             \(L^{*}_{пороговое}\) = {{ matrix.threshold }}
         </div>
         <hr>
+        {% if warning %}
+            <div style="color: red;">Для обучения методу необходимо как минимум 3 варианта решения(три сторки в матрице)!</div>
+        {% endif %}
     </div>
 {% endblock %}

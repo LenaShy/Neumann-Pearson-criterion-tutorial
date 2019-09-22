@@ -21,6 +21,8 @@ class Row(models.Model):
     a0 = models.FloatField()
     a1 = models.FloatField()
     matrix = models.ForeignKey(Matrix, related_name='matrix', on_delete=models.CASCADE)
+    excluded = models.BooleanField(default=False)
+    is_answer = models.BooleanField(default=False)
 
 
 

@@ -144,7 +144,7 @@ def row_update(request):
         try:
             row_obj = Row.objects.get(id=row_id)
         except Row.DoesNotExist:
-            return redirect("tutorial:matrix-create")
+            return redirect("tutorial:training_nr")
         if row_obj in matrix_obj.matrix.all():
             row_obj.delete()
     else:
@@ -168,10 +168,39 @@ def threshold(matrix):
         thrshld = round(random.uniform(min(a) - 1, max(a) + 1), 2)
         matrix.threshold = thrshld
         matrix.save()
-    return
+    exclude_rows(matrix)
+    answer_row(matrix)
+
+
+def exclude_rows(matrix):
+    matrix_state = matrix.controlled_state
+    for row in matrix.matrix.all():
+        if matrix_state == '0' and row.a0 >= matrix.threshold or matrix_state == '1' and row.a1 >= matrix.threshold:
+            row.excluded = True
+            row.save()
+        else:
+            row.excluded = False
+            row.save()
+
+
+def answer_row(matrix):
+    matrix_state = matrix.controlled_state
+    qs = matrix.matrix.all().filter(excluded=False)
+    min_row = qs.first()
+    for row in qs:
+        if matrix_state == '0' and row.a1 < min_row.a1 or matrix_state == '1' and row.a0 < min_row.a0:
+            min_row = row
+    is_answer_qs = matrix.matrix.all().filter(is_answer=True)
+    if len(is_answer_qs) != 0:
+        former_is_answer = is_answer_qs.first()
+        former_is_answer.is_answer = False
+        former_is_answer.save()
+    min_row.is_answer = True
+    min_row.save()
 
 
 def training_for_nrandom(request):
+    context = {}
     matrix_id = request.session.get('matrix_id', None)
     qs = Matrix.objects.filter(id=matrix_id)
     if qs.count() == 1:
@@ -179,78 +208,10 @@ def training_for_nrandom(request):
     else:
         matrix_obj = Matrix.objects.create()
         request.session['matrix_id'] = matrix_obj.id
-    context = {
-        'matrix': matrix_obj
-    }
+    context['matrix'] = matrix_obj
+    if len(matrix_obj.matrix.all()) < 3:
+        context['warning'] = True
     '''if request.method == 'POST':
-        matrix = Matrix.objects.last()
-        if matrix is not None:
-            context['threshold'] = round(matrix.threshold, 2)
-            context['controlled'] = matrix.state
-            context['a11'] = matrix.a11
-            context['a12'] = matrix.a12
-            context['a21'] = matrix.a21
-            context['a22'] = matrix.a22
-            context['a31'] = matrix.a31
-            context['a32'] = matrix.a32
-            context.pop('matrix', None)
-            context.pop('exclude_rows', None)
-            context.pop('answer', None)
-        if 'matrix' in request.POST:
-            a11 = float(request.POST.get('a11'))
-            a12 = float(request.POST.get('a12'))
-            a21 = float(request.POST.get('a21'))
-            a22 = float(request.POST.get('a22'))
-            a31 = float(request.POST.get('a31'))
-            a32 = float(request.POST.get('a32'))
-            state = request.POST.get('state')
-            context['controlled'] = state
-            matrix = Matrix.objects.create(a11=a11, a12=a12, a21=a21, a22=a22, a31=a31, a32=a32, state=state)
-            threshold = 0
-            if state == '\\(\\beta_{1}\\)':
-                threshold = (a11 + a21 + a31) / 3
-                if a11 > threshold:
-                    matrix.exclude_alpha1 = True
-                if a21 > threshold:
-                    matrix.exclude_alpha2 = True
-                if a31 > threshold:
-                    matrix.exclude_alpha3 = True
-                answer_list = [a12, a22, a32]
-                min_row = min(answer_list)
-                if min_row < threshold:
-                    matrix.losses = min_row
-                    i = 0
-                    for answer in answer_list:
-                        i += 1
-                        if answer == min_row:
-                            matrix.answer_nrand.append(i)
-            elif state == '\\(\\beta_{2}\\)':
-                threshold = (a12 + a22 + a32) / 3
-                if a12 > threshold:
-                    matrix.exclude_alpha1 = True
-                if a22 > threshold:
-                    matrix.exclude_alpha2 = True
-                if a32 > threshold:
-                    matrix.exclude_alpha3 = True
-                answer_list = [a11, a21, a31]
-                min_row = min(answer_list)
-                if min_row < threshold:
-                    matrix.losses = min_row
-                    i = 0
-                    for answer in answer_list:
-                        i += 1
-                        if answer == min_row:
-                            matrix.answer_nrand.append(i)
-            matrix.threshold = threshold
-            matrix.save()
-            context['threshold'] = round(threshold, 2)
-            context['a11'] = a11
-            context['a12'] = a12
-            context['a21'] = a21
-            context['a22'] = a22
-            context['a31'] = a31
-            context['a32'] = a32
-            context['exclude_rows'] = RowsForm()
         if 'exclude_rows' in request.POST:
             context['exclude_rows'] = RowsForm(request.POST)
             if ('row1' in request.POST and matrix.exclude_alpha1 is not True
