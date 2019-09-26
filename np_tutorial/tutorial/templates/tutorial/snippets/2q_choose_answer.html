@@ -1,0 +1,29 @@
+<div align=center>
+    <h3>Вопрос #2</h3>
+    <h4>Какое решение является ответом для данного критерия?</h4>
+    <form method='POST' action='{% url "tutorial:is_answer" %}' class="form"> {% csrf_token %}
+        <table class="matrix">
+            <tr>
+                <td></td>
+                <td></td>
+                <td>\(\beta_{1}\)</td>
+                <td>\(\beta_{2}\)</td>
+                <td></td>
+            </tr>
+        {% for row in matrix.matrix.all %}
+            <tr>
+                <td>
+                    <input name='row_id' type="radio" value='{{ row.id }}'>
+                </td>
+                <td>\(\alpha_{ {{ forloop.counter }} }\)</td>
+                <td>{{ row.a0 }}</td>
+                <td>{{ row.a1 }}</td>
+                <td>
+                    <div style="color: red;">{{ row.message }}</div>
+                </td>
+            </tr>
+        {% endfor %}
+        </table>
+        <button type='submit' class='btn' style="cursor: pointer;">Подтвердить ответ</button>
+    </form>
+</div>

@@ -4,6 +4,10 @@
     <list default="true" id="c4798ff7-3a9b-4db8-9d85-91274303b671" name="Default Changelist" comment="">
       <change afterPath="$PROJECT_DIR$/Procfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+<<<<<<< HEAD
+=======
+      <change beforePath="$PROJECT_DIR$/np_tutorial/np_tutorial/settings/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/np_tutorial/np_tutorial/settings/base.py" afterDir="false" />
+>>>>>>> e552e6ed5c39eeec8b1f7a0ce638b3e7a7d2acfa
       <change beforePath="$PROJECT_DIR$/np_tutorial/np_tutorial/settings/production.py" beforeDir="false" afterPath="$PROJECT_DIR$/np_tutorial/np_tutorial/settings/production.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -36,6 +40,10 @@
       <recent name="C:\Users\elena\PycharmProjects\Neumann-Pearson-criterion-tutorial\np_tutorial\tutorial\templates" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+<<<<<<< HEAD
+=======
+      <recent name="C:\Users\oshynk\PycharmProjects\Neumann-Pearson-criterion-tutorial\np_tutorial\tutorial\templates\tutorial" />
+>>>>>>> e552e6ed5c39eeec8b1f7a0ce638b3e7a7d2acfa
       <recent name="C:\Users\elena\PycharmProjects\Neumann-Pearson-criterion-tutorial\np_tutorial" />
     </key>
   </component>

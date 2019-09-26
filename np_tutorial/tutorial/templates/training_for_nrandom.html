@@ -4,112 +4,47 @@
 <title>Theory</title>
 
 {% block base_head %}
-    <link rel='stylesheet' href='{% static "css/main.css" %}' >
+    <!-- <link rel='stylesheet' href='{% static "css/main.css" %}' > -->
 {% endblock %}
 
 {% block content %}
     <div class='text-center'>
         <h1>Раздел обучения</h1>
-            <form method='POST' action='{% url "tutorial:matrix-update" %}' class="form"> {% csrf_token %}
-                <input type='hidden' name='matrix_id' value='{{ matrix.id }}' />
-                <button type='submit'>Add row</button>
-                <!--{% if product in cart.products.all %}
-                    In cart <button type='submit' class='btn btn-link'>Remove?</button>
-                {% else %}
-
-                {% endif %}-->
-            </form>
-            {% for row in matrix.get_row_fields %}
-                {{ row }}
-            {% endfor %}
-            <!--<h1 style="color: red"> do not pay attention to below text now</h1>
-            {% if not end_of_tutorial %}
-                {% if matrix %}
-                    <h3>Задайте матрицу потерь:</h3>
-                    <form method="post">{% csrf_token %}
-                    <div align=center>
-                        <table class="matrix">
-                            <tr>
-                                <td>{{ matrix.a11 }}</td>
-                                <td>{{ matrix.a12 }}</td>
-                            </tr>
-                            <tr>
-                                <td>{{ matrix.a21 }}</td>
-                                <td>{{ matrix.a22 }}</td>
-                            </tr>
-                            <tr>
-                                <td>{{ matrix.a31 }}</td>
-                                <td>{{ matrix.a32 }}</td>
-                            </tr>
-                        </table>
-                    </div>
-                    <h3>Выберите контролируемое состояние природы:</h3>
-                    {{ matrix.state }}
-                    <input type="submit" value="Ввод" name="matrix"/>
+        <div class="row">
+            <div class="col-sm-6">
+                {% include 'tutorial/snippets/matrix.html' %}
+            </div>
+            <div class="col-sm-6">
+                {% include 'tutorial/snippets/controlled_state.html' %}
+            </div>
+        </div>
+        <hr>
+        <div>
+            \(L^{*}_{пороговое}\) = {{ matrix.threshold }}
+        </div>
+        <hr>
+        {% if warning %}
+            <div style="color: red;">Для обучения методу необходимо как минимум 3 варианта решения(три сторки в матрице)!</div>
+        {% endif %}
+        {% if first_q %}
+            {% include 'tutorial/snippets/1q_exclude_rows.html' %}
+            {% if add_next_button %}
+                <h5>Все возможныйе строки были исключены. Можно перейти к слудющему вопросу.</h5>
+                <form method='POST' action='{% url "tutorial:next-question" %}' class="form"> {% csrf_token %}
+                    <button type='submit' class='btn' style="cursor: pointer;">Следующий вопрос</button>
                 </form>
-                {% else %}
-                    <div align=center>
-                        <table class="matrix">
-                            <tr>
-                                <td>{{ a11 }}</td>
-                                <td>{{ a12 }}</td>
-                            </tr>
-                            <tr>
-                                <td>{{ a21 }}</td>
-                                <td>{{ a22 }}</td>
-                            </tr>
-                            <tr>
-                                <td>{{ a31 }}</td>
-                                <td>{{ a32 }}</td>
-                            </tr>
-                        </table>
-                </div>
-                    <h4>Контролирумое состояние: {{ controlled }}</h4>
-                    <br/>
-                    <h4>\(L^{*}_{пороговое}\) = {{ threshold }}</h4>
-                {% endif %}
-                {% if exclude_rows %}
-                    <hr/>
-                    <form method="post">{% csrf_token %}
-                        <h3>Какие строки не учавствуют в выборе решения?</h3>
-                        <p>{{ exclude_rows.row1 }} Строка 1</p>
-                        <p>{{ exclude_rows.row2 }} Строка 2</p>
-                        <p>{{ exclude_rows.row3 }} Строка 3</p>
-                        <input type="submit" value="Ввод" name="exclude_rows" />
-                    </form>
-                    {% if message1 %}
-                        <h5 style="{{ color }}">{{ message1 }}</h5>
-                    {% endif %}
-                {% endif %}
-                {% if answer %}
-                    <hr>
-                    <form method="post">{% csrf_token %}
-                            <h3>Выберите решение:</h3>
-                            <p>{{ answer.row1 }} \(\alpha_{1}\)</p>
-                            <p>{{ answer.row2 }} \(\alpha_{2}\)</p>
-                            <p>{{ answer.row3 }} \(\alpha_{3}\)</p>
-                            <input type="submit" value="Ввод" name="answer" />
-                    </form>
-                    {% if message2 %}
-                        <h5 style="{{ color }}">{{ message2 }}</h5>
-                    {% endif %}
-                {% endif %}
-                {% if losses %}
-                    <hr>
-                    <form method="post">{% csrf_token %}
-                            <h3>Введите значение потерь:</h3>
-                            <p>{{ losses.case_losses }}</p>
-                            <input type="submit" value="Ввод" name="losses" />
-                    </form>
-                    {% if message3 %}
-                        <h5 style="{{ color }}">{{ message3 }}</h5>
-                    {% endif %}
-                {% endif %}
-            {% else %}
-                <h1>Обучение пройдено!</h1>
-            {% endif %}-->
-
-
-
+            {% endif %}
+        {% elif second_q %}
+            {% include 'tutorial/snippets/2q_choose_answer.html' %}
+        {% elif finish %}
+            <h3 style="color: green;">Обучение нерандомизированному критерию Неймана-Пирсона закончено!</h3>
+             <form method='POST' action='{% url "tutorial:start-quiz" %}' class="form"> {% csrf_token %}
+                    <button type='submit' class='btn' style="cursor: pointer;">Начать заново</button>
+             </form>
+        {% else %}
+            <form method='POST' action='{% url "tutorial:start-quiz" %}' class="form"> {% csrf_token %}
+                <button type='submit' class='btn' style="cursor: pointer;">Приступить к вопросам</button>
+            </form>
+        {% endif %}
     </div>
 {% endblock %}
