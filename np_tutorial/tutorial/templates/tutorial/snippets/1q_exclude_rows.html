@@ -1,0 +1,29 @@
+<div align=center>
+    <h3>Вопрос #1</h3>
+    <h4>Какие решения нужно исключить?</h4>
+    <table class="matrix">
+        <tr>
+            <td></td>
+            <td>\(\beta_{1}\)</td>
+            <td>\(\beta_{2}\)</td>
+            <td></td>
+        </tr>
+    {% for row in matrix.matrix.all %}
+        <tr>
+            <td>\(\alpha_{ {{ forloop.counter }} }\)</td>
+            <td>{{ row.a0 }}</td>
+            <td>{{ row.a1 }}</td>
+            <td>
+                <form method='POST' action='{% url "tutorial:is-excluded" %}' class="form"> {% csrf_token %}
+                    <input type='hidden' name='row_id' value='{{ row.id }}' />
+                    {% if row.message == '' %}
+                        <button type='submit' class='btn btn-link btn-sm' style="padding:0px;cursor: pointer;">Исключить</button>
+                    {% else %}
+                        <div style="color: red;">{{ row.message }}</div>
+                    {% endif %}
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
+</div>
