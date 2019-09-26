@@ -31,14 +31,19 @@
             {% if add_next_button %}
                 <h5>Все возможныйе строки были исключены. Можно перейти к слудющему вопросу.</h5>
                 <form method='POST' action='{% url "tutorial:next-question" %}' class="form"> {% csrf_token %}
-                    <button type='submit' class='btn' style="padding:0px;cursor: pointer;">Следующий вопрос</button>
+                    <button type='submit' class='btn' style="cursor: pointer;">Следующий вопрос</button>
                 </form>
             {% endif %}
         {% elif second_q %}
-
+            {% include 'tutorial/snippets/2q_choose_answer.html' %}
+        {% elif finish %}
+            <h3 style="color: green;">Обучение нерандомизированному критерию Неймана-Пирсона закончено!</h3>
+             <form method='POST' action='{% url "tutorial:start-quiz" %}' class="form"> {% csrf_token %}
+                    <button type='submit' class='btn' style="cursor: pointer;">Начать заново</button>
+             </form>
         {% else %}
             <form method='POST' action='{% url "tutorial:start-quiz" %}' class="form"> {% csrf_token %}
-                <button type='submit' class='btn' style="padding:0px;cursor: pointer;">Приступить к вопросам</button>
+                <button type='submit' class='btn' style="cursor: pointer;">Приступить к вопросам</button>
             </form>
         {% endif %}
     </div>

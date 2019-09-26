@@ -124,6 +124,7 @@ def start_quiz(request):
 
 
 def next_question(request):
+    clear_rows_message()
     request.session.pop('first_q')
     request.session['second_q'] = True
     return redirect("tutorial:training_nr")
@@ -194,12 +195,16 @@ def exclude_rows(matrix):
             row.save()
 
 
-def is_excluded(request):
+def clear_rows_message():
     # This block checks if there were any rows with error message and delete this message.
     rows_qs = Row.objects.exclude(message__exact='')
     for row in rows_qs:
         row.message = ''
         row.save()
+
+
+def is_excluded(request):
+    clear_rows_message()
 
     # This block checks if chosen row really need to be excluded. If yes - deletes it, if no - marks it with message.
     row_id = request.POST.get('row_id')
@@ -244,6 +249,24 @@ def answer_row(matrix):
     min_row.save()
 
 
+def is_answer(request):
+    row_id = request.POST.get('row_id')
+    if row_id is not None:
+        try:
+            row_obj = Row.objects.get(id=row_id)
+        except Row.DoesNotExist:
+            return redirect("tutorial:training_nr")
+    if row_obj.is_answer:
+        clear_rows_message()
+        request.session.pop('second_q')
+        request.session['finish'] = True
+    else:
+        clear_rows_message()
+        row_obj.message = 'Это неправильный ответ!'
+        row_obj.save()
+    return redirect("tutorial:training_nr")
+
+
 def training_for_nrandom(request):
     context = {}
     matrix_id = request.session.get('matrix_id', None)
@@ -266,41 +289,7 @@ def training_for_nrandom(request):
     first_q = request.session.get('second_q', None)
     if first_q:
         context['second_q'] = True
-    '''if request.method == 'POST':
-        if 'exclude_rows' in request.POST:
-            context['exclude_rows'] = RowsForm(request.POST)
-            if ('row1' in request.POST and matrix.exclude_alpha1 is not True
-                or 'row1' not in request.POST and matrix.exclude_alpha1 is True) \
-                    or ('row2' in request.POST and matrix.exclude_alpha2 is not True
-                        or 'row2' not in request.POST and matrix.exclude_alpha2 is True) \
-                    or ('row3' in request.POST and matrix.exclude_alpha3 is not True
-                        or 'row3' not in request.POST and matrix.exclude_alpha3 is True):
-                context['message1'] = 'Вы ошиблись!'
-                context['color'] = 'color: red;'
-            else:
-                context['message1'] = 'Правильный ответ!'
-                context['color'] = 'color: green;'
-                context['answer'] = RowsForm()
-        if 'answer' in request.POST:
-            context['answer'] = RowsForm(request.POST)
-            if ('row1' in request.POST and 1 not in matrix.answer_nrand
-                or 'row1' not in request.POST and 1 in matrix.answer_nrand) \
-                    or ('row2' in request.POST and 2 not in matrix.answer_nrand
-                        or 'row2' not in request.POST and 2 in matrix.answer_nrand) \
-                    or ('row3' in request.POST and 3 not in matrix.answer_nrand
-                        or 'row3' not in request.POST and 3 in matrix.answer_nrand ):
-                context['message2'] = 'Вы ошиблись!'
-                context['color'] = 'color: red;'
-            else:
-                context['message2'] = 'Правильный ответ!'
-                context['color'] = 'color: green;'
-                context['losses'] = RowsForm()
-        if 'losses' in request.POST:
-            context['losses'] = RowsForm(request.POST)
-            losses = request.POST.get('case_losses')
-            if math.isclose(float(losses), matrix.losses, abs_tol=0.001):
-                context['end_of_tutorial'] = True
-            else:
-                context['message3'] = 'Вы ошиблись!'
-                context['color'] = 'color: red;'''
+    finish = request.session.get('finish', None)
+    if finish:
+        context['finish'] = True
     return render(request, 'training_for_nrandom.html', context)

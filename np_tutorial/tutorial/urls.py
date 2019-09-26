@@ -8,7 +8,8 @@ from .views import (training_for_nrandom,
                     state_update,
                     is_excluded,
                     start_quiz,
-                    next_question)
+                    next_question,
+                    is_answer)
     #example_for_random,
     #training_for_random
 
@@ -24,4 +25,5 @@ urlpatterns = [
     path('nrandom/training/is_excluded', is_excluded, name='is-excluded'),
     path('nrandom/training/start_quiz', start_quiz, name='start-quiz'),
     path('nrandom/training/next_question', next_question, name='next-question'),
+    path('nrandom/training/is_answer', is_answer, name='is_answer'),
 ]
