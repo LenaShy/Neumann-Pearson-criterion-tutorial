@@ -118,6 +118,17 @@ def example_for_nrandom(request):
     return render(request, 'example_for_nrandom.html', {})
 
 
+def start_quiz(request):
+    request.session['first_q'] = True
+    return redirect("tutorial:training_nr")
+
+
+def next_question(request):
+    request.session.pop('first_q')
+    request.session['second_q'] = True
+    return redirect("tutorial:training_nr")
+
+
 def state_update(request):
     matrix_id = request.session.get('matrix_id', None)
     qs = Matrix.objects.filter(id=matrix_id)
@@ -183,6 +194,40 @@ def exclude_rows(matrix):
             row.save()
 
 
+def is_excluded(request):
+    # This block checks if there were any rows with error message and delete this message.
+    rows_qs = Row.objects.exclude(message__exact='')
+    for row in rows_qs:
+        row.message = ''
+        row.save()
+
+    # This block checks if chosen row really need to be excluded. If yes - deletes it, if no - marks it with message.
+    row_id = request.POST.get('row_id')
+    if row_id is not None:
+        try:
+            row_obj = Row.objects.get(id=row_id)
+        except Row.DoesNotExist:
+            return redirect("tutorial:training_nr")
+        if row_obj.excluded:
+            row_obj.delete()
+        else:
+            row_obj.message = 'Это решение не должно быть исключено!'
+            row_obj.save()
+
+    # This block checks if all rows which need to be excluded is already excluded.
+    matrix_id = request.session.get('matrix_id', None)
+    qs = Matrix.objects.filter(id=matrix_id)
+    if qs.count() == 1:
+        matrix_obj = qs.first()
+    excluded_counter = 0
+    for row in matrix_obj.matrix.all():
+        if row.excluded:
+            excluded_counter += 1
+    if excluded_counter == 0:
+        request.session['add_next_button'] = True
+    return redirect("tutorial:training_nr")
+
+
 def answer_row(matrix):
     matrix_state = matrix.controlled_state
     qs = matrix.matrix.all().filter(excluded=False)
@@ -211,6 +256,16 @@ def training_for_nrandom(request):
     context['matrix'] = matrix_obj
     if len(matrix_obj.matrix.all()) < 3:
         context['warning'] = True
+
+    first_q = request.session.get('first_q', None)
+    if first_q:
+        context['first_q'] = True
+    add_next_button = request.session.get('add_next_button', None)
+    if add_next_button:
+        context['add_next_button'] = True
+    first_q = request.session.get('second_q', None)
+    if first_q:
+        context['second_q'] = True
     '''if request.method == 'POST':
         if 'exclude_rows' in request.POST:
             context['exclude_rows'] = RowsForm(request.POST)

@@ -26,5 +26,20 @@
         {% if warning %}
             <div style="color: red;">Для обучения методу необходимо как минимум 3 варианта решения(три сторки в матрице)!</div>
         {% endif %}
+        {% if first_q %}
+            {% include 'tutorial/snippets/1q_exclude_rows.html' %}
+            {% if add_next_button %}
+                <h5>Все возможныйе строки были исключены. Можно перейти к слудющему вопросу.</h5>
+                <form method='POST' action='{% url "tutorial:next-question" %}' class="form"> {% csrf_token %}
+                    <button type='submit' class='btn' style="padding:0px;cursor: pointer;">Следующий вопрос</button>
+                </form>
+            {% endif %}
+        {% elif second_q %}
+
+        {% else %}
+            <form method='POST' action='{% url "tutorial:start-quiz" %}' class="form"> {% csrf_token %}
+                <button type='submit' class='btn' style="padding:0px;cursor: pointer;">Приступить к вопросам</button>
+            </form>
+        {% endif %}
     </div>
 {% endblock %}

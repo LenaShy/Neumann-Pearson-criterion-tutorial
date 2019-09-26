@@ -23,6 +23,7 @@ class Row(models.Model):
     matrix = models.ForeignKey(Matrix, related_name='matrix', on_delete=models.CASCADE)
     excluded = models.BooleanField(default=False)
     is_answer = models.BooleanField(default=False)
+    message = models.CharField(max_length=20, default='')
 
 
 
