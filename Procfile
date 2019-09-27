@@ -1,1 +1,1 @@
-web: gunicorn neumann-pearson-tutorial.wsgi
+web: gunicorn np_tutorial.wsgi
