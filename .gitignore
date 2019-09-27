@@ -1,4 +1,5 @@
 np-tutorial/settings/local.py
+.idea
 
 .DS_Store
 bin/
