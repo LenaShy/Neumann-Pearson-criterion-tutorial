@@ -5,6 +5,7 @@ np-tutorial/settings/local.py
 bin/
 include/
 pip-selfcheck.json
+sqlite3.db
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
