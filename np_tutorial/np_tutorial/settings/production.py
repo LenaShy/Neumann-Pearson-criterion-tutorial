@@ -31,7 +31,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['neumann-pearson-tutorial.herokuapp.com']
+ALLOWED_HOSTS = ['np-tutorial.herokuapp.com']
 
 
 # Application definition

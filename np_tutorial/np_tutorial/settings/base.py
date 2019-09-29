@@ -25,7 +25,7 @@ SECRET_KEY = 'gsdq5#+8=x#_e-j337euq2yp^o8jxlrzd47@2zjs75r(o&q*m+'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['np-tutorial.herokuapp.com']
 
 
 # Application definition
