@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    ports:
+      - "5432:5432"
+  web:
+    build: .
+    command: bash -c "python manage.py migrate --settings=np_tutorial.settings.docker && python manage.py makemigrations --settings=np_tutorial.settings.docker && python manage.py runserver 0.0.0.0:8000 --settings=np_tutorial.settings.docker"
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
