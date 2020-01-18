@@ -1,7 +1,4 @@
 from django.db import models
-from django.core.validators import DecimalValidator
-
-from picklefield.fields import PickledObjectField
 
 
 class Matrix(models.Model):
