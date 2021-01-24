@@ -1,0 +1,7 @@
+dj-database-url==0.5.0
+Django==2.1.7
+django-picklefield==2.0
+gunicorn==19.9.0
+numpy==1.15.2
+psycopg2==2.8.4
+pytz==2018.9
