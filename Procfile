@@ -1,1 +1,1 @@
-web: gunicorn np_tutorial.wsgi
+web: gunicorn np_tutorial.np_tutorial.wsgi
